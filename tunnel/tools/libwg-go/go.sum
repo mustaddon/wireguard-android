@@ -6,6 +6,8 @@ github.com/mustaddon/wireguard-go v0.0.11 h1:zFDBW3wYgxohQ+S2jra0yePnsHRIU+5B9DD
 github.com/mustaddon/wireguard-go v0.0.11/go.mod h1:5TcS17fyFfTZSON+VyrjZhHLaXVvSslD3Oef0i4FxIk=
 github.com/mustaddon/wireguard-go v0.0.20 h1:ZdrPiMshrYv5dYxGpXpqFJnN8xQuhL627gWKx/3xHgE=
 github.com/mustaddon/wireguard-go v0.0.20/go.mod h1:5TcS17fyFfTZSON+VyrjZhHLaXVvSslD3Oef0i4FxIk=
+github.com/mustaddon/wireguard-go v0.0.21 h1:4bbI/9oekIU/0NbjpXPYb+//xE+vgX6jByrw3fMARBo=
+github.com/mustaddon/wireguard-go v0.0.21/go.mod h1:5TcS17fyFfTZSON+VyrjZhHLaXVvSslD3Oef0i4FxIk=
 golang.org/x/crypto v0.38.0 h1:jt+WWG8IZlBnVbomuhg2Mdq0+BBQaHbtqHEFEigjUV8=
 golang.org/x/crypto v0.38.0/go.mod h1:MvrbAqul58NNYPKnOra203SB9vpuZW0e+RRZV+Ggqjw=
 golang.org/x/net v0.40.0 h1:79Xs7wF06Gbdcg4kdCCIQArK11Z1hr5POQ6+fIYHNuY=
