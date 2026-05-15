@@ -54,6 +54,13 @@ class InterfaceProxy : BaseObservable, Parcelable {
         }
 
     @get:Bindable
+    var hiddenMask: String = ""
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.hiddenMask)
+        }
+
+    @get:Bindable
     var privateKey: String = ""
         set(value) {
             field = value
@@ -77,6 +84,7 @@ class InterfaceProxy : BaseObservable, Parcelable {
         listenPort = parcel.readString() ?: ""
         mtu = parcel.readString() ?: ""
         privateKey = parcel.readString() ?: ""
+        hiddenMask = parcel.readString() ?: ""
     }
 
     constructor(other: Interface) {
@@ -89,6 +97,7 @@ class InterfaceProxy : BaseObservable, Parcelable {
         mtu = other.mtu.map { it.toString() }.orElse("")
         val keyPair = other.keyPair
         privateKey = keyPair.privateKey.toBase64()
+        hiddenMask = other.hiddenMask?.toBase64() ?: ""
     }
 
     constructor()
@@ -112,6 +121,7 @@ class InterfaceProxy : BaseObservable, Parcelable {
         if (listenPort.isNotEmpty()) builder.parseListenPort(listenPort)
         if (mtu.isNotEmpty()) builder.parseMtu(mtu)
         if (privateKey.isNotEmpty()) builder.parsePrivateKey(privateKey)
+        if (hiddenMask.isNotEmpty()) builder.parseHiddenMask(hiddenMask)
         return builder.build()
     }
 
@@ -123,6 +133,7 @@ class InterfaceProxy : BaseObservable, Parcelable {
         dest.writeString(listenPort)
         dest.writeString(mtu)
         dest.writeString(privateKey)
+        dest.writeString(hiddenMask)
     }
 
     private class InterfaceProxyCreator : Parcelable.Creator<InterfaceProxy> {
