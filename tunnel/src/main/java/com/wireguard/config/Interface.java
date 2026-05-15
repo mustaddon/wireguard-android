@@ -44,6 +44,7 @@ public final class Interface {
     private final Set<String> excludedApplications;
     private final Set<String> includedApplications;
     private final KeyPair keyPair;
+    private final Key hiddenMask;
     private final Optional<Integer> listenPort;
     private final Optional<Integer> mtu;
 
@@ -55,6 +56,7 @@ public final class Interface {
         excludedApplications = Collections.unmodifiableSet(new LinkedHashSet<>(builder.excludedApplications));
         includedApplications = Collections.unmodifiableSet(new LinkedHashSet<>(builder.includedApplications));
         keyPair = Objects.requireNonNull(builder.keyPair, "Interfaces must have a private key");
+        hiddenMask = builder.hiddenMask;
         listenPort = builder.listenPort;
         mtu = builder.mtu;
     }
@@ -95,6 +97,9 @@ public final class Interface {
                 case "privatekey":
                     builder.parsePrivateKey(attribute.getValue());
                     break;
+                case "hiddenmask":
+                    builder.parseHiddenMask(attribute.getValue());
+                    break;
                 default:
                     throw new BadConfigException(Section.INTERFACE, Location.TOP_LEVEL,
                             Reason.UNKNOWN_ATTRIBUTE, attribute.getKey());
@@ -114,6 +119,7 @@ public final class Interface {
                 && excludedApplications.equals(other.excludedApplications)
                 && includedApplications.equals(other.includedApplications)
                 && keyPair.equals(other.keyPair)
+                && Objects.equals(hiddenMask, other.hiddenMask)
                 && listenPort.equals(other.listenPort)
                 && mtu.equals(other.mtu);
     }
@@ -177,6 +183,10 @@ public final class Interface {
         return keyPair;
     }
 
+    public Key getHiddenMask() {
+        return hiddenMask;
+    }
+
     /**
      * Returns the UDP port number that the WireGuard interface will listen on.
      *
@@ -205,6 +215,7 @@ public final class Interface {
         hash = 31 * hash + keyPair.hashCode();
         hash = 31 * hash + listenPort.hashCode();
         hash = 31 * hash + mtu.hashCode();
+        hash = 31 * hash + Objects.hashCode(hiddenMask);
         return hash;
     }
 
@@ -245,6 +256,8 @@ public final class Interface {
         listenPort.ifPresent(lp -> sb.append("ListenPort = ").append(lp).append('\n'));
         mtu.ifPresent(m -> sb.append("MTU = ").append(m).append('\n'));
         sb.append("PrivateKey = ").append(keyPair.getPrivateKey().toBase64()).append('\n');
+        if (hiddenMask != null)
+            sb.append("HiddenMask = ").append(hiddenMask.toBase64()).append('\n');
         return sb.toString();
     }
 
@@ -257,6 +270,7 @@ public final class Interface {
     public String toWgUserspaceString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("private_key=").append(keyPair.getPrivateKey().toHex()).append('\n');
+        if (hiddenMask != null) sb.append("hidden_mask=").append(hiddenMask.toHex()).append('\n');
         listenPort.ifPresent(lp -> sb.append("listen_port=").append(lp).append('\n'));
         return sb.toString();
     }
@@ -275,6 +289,7 @@ public final class Interface {
         private final Set<String> includedApplications = new LinkedHashSet<>();
         // No default; must be provided before building.
         @Nullable private KeyPair keyPair;
+        @Nullable private Key hiddenMask;
         // Defaults to not present.
         private Optional<Integer> listenPort = Optional.empty();
         // Defaults to not present.
@@ -398,6 +413,20 @@ public final class Interface {
                 throw new BadConfigException(Section.INTERFACE, Location.PRIVATE_KEY, e);
             }
         }
+
+        public Builder parseHiddenMask(final String mask) throws BadConfigException {
+            try {
+                return setHiddenMask(Key.fromBase64(mask));
+            } catch (final KeyFormatException e) {
+                throw new BadConfigException(Section.INTERFACE, Location.HIDDEN_MASK, e);
+            }
+        }
+
+        public Builder setHiddenMask(final Key mask) {
+            this.hiddenMask = mask;
+            return this;
+        }
+
 
         public Builder setKeyPair(final KeyPair keyPair) {
             this.keyPair = keyPair;

@@ -76,6 +76,7 @@ public class BadConfigException extends Exception {
         LISTEN_PORT("ListenPort"),
         MTU("MTU"),
         PERSISTENT_KEEPALIVE("PersistentKeepalive"),
+        HIDDEN_MASK("HiddenMask"),
         PRE_SHARED_KEY("PresharedKey"),
         PRIVATE_KEY("PrivateKey"),
         PUBLIC_KEY("PublicKey");
